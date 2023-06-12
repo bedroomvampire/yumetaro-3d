@@ -1,0 +1,20 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=2]
+
+[ext_resource path="res://psx.tres" type="Shader" id=1]
+
+[sub_resource type="Gradient" id=10]
+offsets = PoolRealArray( 0 )
+colors = PoolColorArray( 1, 0.388235, 0, 1 )
+
+[sub_resource type="GradientTexture" id=11]
+gradient = SubResource( 10 )
+width = 1
+
+[resource]
+shader = ExtResource( 1 )
+shader_param/jitter = 0.25
+shader_param/jitter_z_coordinate = true
+shader_param/jitter_depth_independent = true
+shader_param/affine_texture_mapping = true
+shader_param/alpha_scissor = 1.0
+shader_param/albedo = SubResource( 11 )

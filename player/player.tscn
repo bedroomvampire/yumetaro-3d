@@ -1,0 +1,130 @@
+[gd_scene load_steps=20 format=2]
+
+[ext_resource path="res://player/script/controller.gd" type="Script" id=1]
+[ext_resource path="res://player/model.tscn" type="PackedScene" id=2]
+[ext_resource path="res://player/script/arm_rot.gd" type="Script" id=3]
+[ext_resource path="res://psx2.tres" type="Shader" id=4]
+[ext_resource path="res://placeholders/gimmok.png" type="Texture" id=5]
+
+[sub_resource type="CapsuleShape" id=1]
+height = 0.5
+
+[sub_resource type="AnimationNodeAnimation" id=2]
+animation = "idle"
+
+[sub_resource type="AnimationNodeAnimation" id=10]
+animation = "jump"
+
+[sub_resource type="AnimationNodeAnimation" id=3]
+animation = "move"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=4]
+advance_condition = "move"
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=5]
+advance_condition = "idle"
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=11]
+advance_condition = "jump"
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=12]
+advance_condition = "idle"
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=13]
+advance_condition = "jump"
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=14]
+advance_condition = "move"
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachine" id=6]
+states/idle/node = SubResource( 2 )
+states/idle/position = Vector2( 327, 42 )
+states/jump/node = SubResource( 10 )
+states/jump/position = Vector2( 431, 116 )
+states/move/node = SubResource( 3 )
+states/move/position = Vector2( 492, 35 )
+transitions = [ "idle", "move", SubResource( 4 ), "move", "idle", SubResource( 5 ), "idle", "jump", SubResource( 11 ), "jump", "idle", SubResource( 12 ), "move", "jump", SubResource( 13 ), "jump", "move", SubResource( 14 ) ]
+start_node = "idle"
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=7]
+
+[sub_resource type="QuadMesh" id=8]
+size = Vector2( 2, 2 )
+
+[sub_resource type="ShaderMaterial" id=9]
+render_priority = -1
+shader = ExtResource( 4 )
+shader_param/color_depth = 5
+shader_param/dithering = true
+shader_param/resolution_scale = 1
+
+[node name="KinematicBody" type="KinematicBody"]
+collision_layer = 0
+script = ExtResource( 1 )
+
+[node name="Spatial" parent="." instance=ExtResource( 2 )]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.5, 0 )
+
+[node name="torso" parent="Spatial" index="0"]
+transform = Transform( 7.54979e-08, 0, -1, 0, 1, 0, 1, 0, 7.54979e-08, 0, 1.14, 0 )
+
+[node name="lhand" parent="Spatial/torso" index="1"]
+transform = Transform( 1.36929e-08, 1.17143e-08, 0.2268, -0.157743, 0.178399, -9.91157e-16, -0.181368, -0.155161, 1.71229e-08, 1.22659e-07, -8.9407e-06, -0.685958 )
+
+[node name="rhand" parent="Spatial/torso" index="2"]
+transform = Transform( -1.12303e-10, -1.56212e-08, -0.2268, -0.157743, 0.178399, -1.1237e-08, 0.181368, 0.155161, -9.91374e-09, -1.22659e-07, -8.9407e-06, 0.685958 )
+
+[node name="lfoot" parent="Spatial" index="1"]
+transform = Transform( 0.0347297, 0, -0.196962, 0, 0.2, 0, 0.196962, 0, 0.0347297, 0.499999, 0.139991, 2.08616e-06 )
+
+[node name="rfoot" parent="Spatial" index="2"]
+transform = Transform( -0.0347296, 0, -0.196962, 0, 0.2, 0, 0.196962, 0, -0.0347296, -0.500001, 0.139991, 2.14577e-06 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.75, 0 )
+shape = SubResource( 1 )
+
+[node name="SpringArm" type="SpringArm" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+spring_length = 10.0
+margin = 1.0
+script = ExtResource( 3 )
+
+[node name="Camera" type="Camera" parent="SpringArm"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0 )
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource( 6 )
+anim_player = NodePath("../Spatial/AnimationPlayer")
+active = true
+parameters/playback = SubResource( 7 )
+parameters/conditions/idle = false
+parameters/conditions/jump = false
+parameters/conditions/move = false
+
+[node name="Control" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="TextureRect" type="TextureRect" parent="Control"]
+margin_right = 320.0
+margin_bottom = 240.0
+mouse_filter = 2
+texture = ExtResource( 5 )
+
+[node name="MeshInstance2" type="MeshInstance" parent="."]
+cast_shadow = 0
+extra_cull_margin = 16384.0
+generate_lightmap = false
+mesh = SubResource( 8 )
+software_skinning_transform_normals = false
+material/0 = SubResource( 9 )
+
+[editable path="Spatial"]

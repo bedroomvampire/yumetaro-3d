@@ -1,0 +1,13 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=2]
+
+[ext_resource path="res://psx.tres" type="Shader" id=1]
+[ext_resource path="res://model/yume/yumetaro.png" type="Texture" id=2]
+
+[resource]
+shader = ExtResource( 1 )
+shader_param/jitter = 0.25
+shader_param/jitter_z_coordinate = true
+shader_param/jitter_depth_independent = true
+shader_param/affine_texture_mapping = true
+shader_param/alpha_scissor = 1.0
+shader_param/albedo = ExtResource( 2 )
